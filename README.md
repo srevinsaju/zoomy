@@ -3,7 +3,12 @@ Made with Python, April 2020.
 Created by [Kewbish](https://kewbish.github.io).  
 Available on [PyPi as Zoomy](https://pypi.org/project/zoomy/).
 Released under the [GPLv3 License](https://www.gnu.org/licenses/gpl-3.0.en.html).  
-Issues are welcome!  
+Issues are welcome! 
+
+> **NOTE**
+> This is a fork of the original `zoomy` repository
+> Whats different is the new feature of supporting `uname` param
+> i.e the user name of the participant
 
 ## :camera: Why Zoomy?
 For the developer, the power user, the student who's just tired of going through countless emails to find a link, then flip through for passwords, and finally try to join the call.  
@@ -12,7 +17,7 @@ Also works in signed-out mode - just in case (like me) you don't want to give Zo
 
 ## :movie_camera: Usage
 Run `zmy [alias]` to open your `alias` meeting. For example, `zmy math` to open your math meeting.  
-Run `zmy add [alias] [confno] [*pwd]` or `zmy a [alias] [confno] [*pwd]` to add a meeting called `alias` with the conference number `confno` and the password `pwd`. Adding a password is optional. Your meetings cannot be called `add`, `delete`, `list`, or `path` (or `a` / `d` / `l` / `p`). This option can also be used to edit currently saved meetings.  
+Run `zmy add [alias] [confno] [*pwd] [*uname]` or `zmy a [alias] [confno] [*pwd] [*uname]` to add a meeting called `alias` with the conference number `confno` and the password `pwd`. Adding a password is optional. Your meetings cannot be called `add`, `delete`, `list`, or `path` (or `a` / `d` / `l` / `p`). This option can also be used to edit currently saved meetings.  
 Run `zmy delete [alias]` or `zmy d [alias]` to delete your `alias` meeting. For example, `zmy d math` to delete your math meeting.  
 Run `zmy list` or `zmy l` to list all your available meetings.  
 Run `zmy path` or `zmy p` to print your `config.zmy` filepath.  
@@ -30,6 +35,9 @@ It simplifies the process of remembering all those links and passwords, especial
 > :warning: - This does expose your meeting IDs and passwords (if you choose to supply them), and it *is* possible, if a hacker decided, to `grep` your entire system for a `.zmy` file and infiltrate your meeting. Use at your own risk.  
 
 ## :fast_forward: Changelog
+**0.5~srevin**:
+- Feature: Add user name support
+
 **0.5**:
 - Feature: Add success messages
 
