@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from os import name, system, path as pth
 from sys import argv
+from urllib.parse import quote
 
 
 class Zoomy():
@@ -32,7 +33,7 @@ class Zoomy():
 
     def help(self):
         print("\nWelcome to Zoomy - a Zoom utility for the terminal.")
-        print("Commands:\n- zmy [add/a] [alias] [confno] [*pwd]")
+        print("Commands:\n- zmy [add/a] [alias] [confno] [*pwd] [*username]")
         print("- zmy [delete/d] [alias]")
         print("- zmy [list/l]")
         print("- zmy [path/p]")
@@ -43,15 +44,19 @@ class Zoomy():
         if len(argv) < 4:
             print(
                 "Error: Please enter the correct amount of arguments.\n"
-                + "Usage: zmy [add/a] [name] [confno] [*pwd]")
+                + "Usage: zmy [add/a] [name] [confno] [*pwd] [*username]")
             return
         if argv[2] in ['add', 'a', 'delete', 'd', 'list', 'l', 'path', 'p',
                        '--help', '--h']:
             print("Error: Invalid name, alias cannot be made.")
             return
-        try:
+        assert len(argv) >= 4
+        if len(argv) == 6:
+            username = argv[5]
+            formatted_meet = f"{argv[3]},{argv[4]},{username}"
+        elif len(argv) == 5:
             formatted_meet = f"{argv[3]},{argv[4]}"
-        except IndexError:
+        else:
             formatted_meet = f"{argv[3]}"
         self.zm.set('Meetings', argv[2], formatted_meet)
         try:
@@ -84,13 +89,31 @@ class Zoomy():
         opener = 'start' if name == "nt" else 'xdg-open'
         if self.zm.has_option("Meetings", argv[1]):
             conf = self.meetings.get(argv[1])
-            t = True
+            t = False
             if ',' in conf:
-                conf = conf.split(",", 1)
-                t = False
-            system(f"{opener} zoommtg://zoom.us/join?confno={conf}" if t
-                   else f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
-                   f"{joiner}&pwd={conf[1]}")
+                conf = conf.split(",")
+                custom_name = len(conf) == 3
+                t = bool(conf[1])
+            if t and custom_name:
+                # launch zoom with custom name by the uname param
+                print(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                      f"{joiner}&pwd={conf[1]}&uname={quote(conf[2])}")
+                system(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                       f"{joiner}&pwd={conf[1]}&uname={quote(conf[2])}")
+            elif custom_name:
+                print(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                      f"{joiner}&uname={quote(conf[2])}")
+                system(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                       f"{joiner}&uname={quote(conf[2])}")
+
+            elif t:
+                print(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                       f"{joiner}&pwd={conf[1]}")
+                system(f"{opener} zoommtg://zoom.us/join?confno={conf[0]}"
+                       f"{joiner}&pwd={conf[1]}")
+            else:
+                print(f"{opener} zoommtg://zoom.us/join?confno={conf}")
+                system(f"{opener} zoommtg://zoom.us/join?confno={conf}")
             print(f"Success: Meeting {argv[1]} opened.")
         else:
             print("Error: Meeting does not exist.\nRun zmy add [alias] "
